@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PANEMAR Jobs - peviitor.ro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    ::-webkit-scrollbar { width: 13px; }
+    ::-webkit-scrollbar-track { box-shadow: inset 0 0 5px grey; }
+    ::-webkit-scrollbar-thumb { background: #e08d21; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #e08d21c4; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #e9e9e9;
+      min-height: 100vh;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header .logo h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+    .header .logo h1 span {
+      color: #e08d21;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+    .card h2 {
+      font-size: 22px;
+      color: #1a1a2e;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card p, .card li {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #444;
+    }
+    .card ul { padding-left: 20px; }
+    .badge {
+      display: inline-block;
+      background: #e08d21;
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #888;
+      font-size: 14px;
+    }
+    .footer a { color: #e08d21; text-decoration: none; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #e08d21;
+    }
+    .stat-card .label {
+      font-size: 14px;
+      color: #888;
+      margin-top: 4px;
+    }
+    @media (max-width: 768px) {
+      .header .logo h1 { font-size: 20px; }
+      .container { padding: 20px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <h1>PANEMAR <span>Jobs</span></h1>
+    </div>
+    <span class="badge">job_seeker_ro_spider</span>
+  </header>
+
+  <div class="container">
+    <div class="stats" id="stats">
+      <div class="stat-card">
+        <div class="number" id="jobCount">-</div>
+        <div class="label">Job-uri active</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">4844886</div>
+        <div class="label">CIF</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">Cluj-Napoca</div>
+        <div class="label">Locație</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Despre</h2>
+      <p>
+        Scraper pentru job-urile <strong>PANEMAR MORARIT SI PANIFICATIE SRL</strong>.
+        Extrage anunțurile de pe <a href="https://panemar.ro/angajari/">panemar.ro/angajari/</a>
+        și le publică în <a href="https://peviitor.ro">peviitor.ro</a> prin API-ul SOLR.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Roluri disponibile</h2>
+      <ul>
+        <li><strong>Brutar</strong></li>
+        <li><strong>Patiser</strong></li>
+        <li><strong>Șofer</strong></li>
+        <li><strong>Muncitor necalificat</strong></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Resurse</h2>
+      <ul>
+        <li><a href="https://github.com/sebiboga/panemar-morarit-si-panificatie-srl-nodejs-scraper">GitHub Repository</a></li>
+        <li><a href="https://panemar.ro/">Website</a></li>
+        <li><a href="https://panemar.ro/angajari/">Carieră</a></li>
+        <li><a href="https://peviitor.ro">peviitor.ro</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>Part of <a href="https://github.com/sebiboga">sebiboga</a> · job_seeker_ro_spider · MIT License</p>
+  </footer>
+
+  <script>
+    document.getElementById('jobCount').textContent = '?';
+  </script>
+</body>
+</html>
