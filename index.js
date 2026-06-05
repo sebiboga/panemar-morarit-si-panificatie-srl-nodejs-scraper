@@ -21,9 +21,11 @@ function extractJobsFromCareersPage(html) {
     if (!title || seen.has(title)) continue;
     seen.add(title);
 
+    const q = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
     jobs.push({
       title,
-      url: CAREERS_URL
+      url: `${CAREERS_URL}?q=${q}`
     });
   }
 
