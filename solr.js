@@ -182,9 +182,9 @@ async function runVerification(cif) {
   const result = await querySOLR(cif);
   console.log(`Total jobs in SOLR for CIF ${cif}: ${result.numFound}`);
 
-  if (fs.existsSync("jobs_existing.json")) {
+  if (fs.existsSync("tmp/jobs_existing.json")) {
     console.log("\n=== Verify existing URLs ===\n");
-    const existing = JSON.parse(fs.readFileSync("jobs_existing.json", "utf-8"));
+    const existing = JSON.parse(fs.readFileSync("tmp/jobs_existing.json", "utf-8"));
     const existingJobs = existing.jobs || [];
     console.log(`Checking ${existingJobs.length} URLs...`);
 
@@ -205,8 +205,8 @@ async function runVerification(cif) {
     }
 
     if (invalidUrls.length === 0) {
-      console.log("\n✅ All URLs valid - deleting jobs_existing.json");
-      fs.unlinkSync("jobs_existing.json");
+      console.log("\n✅ All URLs valid - deleting tmp/jobs_existing.json");
+      fs.unlinkSync("tmp/jobs_existing.json");
     } else {
       console.log("⚠️ Keeping jobs_existing.json for reference");
     }
@@ -228,8 +228,8 @@ async function runExtract(cif) {
       count: result.numFound,
       jobs: result.docs
     };
-    fs.writeFileSync("jobs_existing.json", JSON.stringify(backup, null, 2), "utf-8");
-    console.log("\n✅ Saved existing jobs to jobs_existing.json\n");
+    fs.writeFileSync("tmp/jobs_existing.json", JSON.stringify(backup, null, 2), "utf-8");
+    console.log("\n✅ Saved existing jobs to tmp/jobs_existing.json\n");
   } catch (err) {
     console.error("Failed to extract existing jobs:", err.message);
     process.exit(1);

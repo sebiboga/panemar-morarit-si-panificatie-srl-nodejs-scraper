@@ -29,10 +29,13 @@ describe("extractJobsFromCareersPage", () => {
     const jobs = extractJobsFromCareersPage(html);
     expect(jobs).toHaveLength(4);
     expect(jobs[0].title).toBe("Brutar");
-    expect(jobs[0].url).toBe(CAREERS_URL);
+    expect(jobs[0].url).toBe(`${CAREERS_URL}#brutar`);
     expect(jobs[1].title).toBe("Patiser");
+    expect(jobs[1].url).toBe(`${CAREERS_URL}#patiser`);
     expect(jobs[2].title).toBe("Șofer");
+    expect(jobs[2].url).toBe(`${CAREERS_URL}#ofer`);
     expect(jobs[3].title).toBe("Muncitor necalificat");
+    expect(jobs[3].url).toBe(`${CAREERS_URL}#muncitor-necalificat`);
   });
 
   test("returns empty array when no options found", () => {
@@ -47,7 +50,7 @@ describe("extractJobsFromCareersPage", () => {
     const jobs = extractJobsFromCareersPage(html);
     expect(jobs).toHaveLength(1);
     expect(jobs[0].title).toBe("Brutar");
-    expect(jobs[0].url).toBe(CAREERS_URL);
+    expect(jobs[0].url).toBe(`${CAREERS_URL}#brutar`);
   });
 
   test("deduplicates repeated options", () => {
