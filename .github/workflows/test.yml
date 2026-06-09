@@ -1,16 +1,93 @@
 name: Automation Tests
 
 on:
+  schedule:
+    - cron: '0 7 * * *'
   push:
     branches: [main]
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode (no deletions)'
+        required: true
+        default: 'true'
 
 jobs:
-  test:
+  validate-jobs:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    needs: Automation-Tests
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate and remove expired jobs
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "Schedule trigger — running LIVE mode..."
+            node --no-deprecation tests/validate-panemar-jobs.js --delete
+          elif [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            echo "Running in DRY RUN mode..."
+            node --no-deprecation tests/validate-panemar-jobs.js --dry-run
+          else
+            echo "Running in LIVE mode (will delete expired jobs)..."
+            node --no-deprecation tests/validate-panemar-jobs.js --delete
+          fi
+        env:
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+
+  ensure-company-core:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ensure PANEMAR exists in company core
+        env:
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+        run: |
+          EXISTING=$(curl -s --user "${SOLR_AUTH}" \
+            "https://solr.peviitor.ro/solr/company/select?q=id:4844886&rows=1" | jq '.response.numFound')
+
+          echo "PANEMAR count in company core: $EXISTING"
+
+          if [ "$EXISTING" -eq "0" ]; then
+            echo "PANEMAR not found - adding to company core..."
+            echo '[{"id":"4844886","company":"PANEMAR MORARIT SI PANIFICATIE SRL","brand":"PANEMAR","status":"activ","location":["Cluj-Napoca"],"website":["https://panemar.ro"],"career":["https://panemar.ro/angajari/"],"lastScraped":"'$(date +%Y-%m-%d)'","scraperFile":"https://raw.githubusercontent.com/sebiboga/panemar-morarit-si-panificatie-srl-nodejs-scraper/main/.github/workflows/scrape.yml"}]' > company_data.json
+
+            curl -s --user "${SOLR_AUTH}" \
+              "https://solr.peviitor.ro/solr/company/update/json?commit=true" \
+              -X POST \
+              -H "Content-Type: application/json" \
+              --data-binary @company_data.json
+          else
+            echo "PANEMAR already exists in company core - no action needed"
+          fi
+
+          FINAL=$(curl -s --user "${SOLR_AUTH}" \
+            "https://solr.peviitor.ro/solr/company/select?q=id:4844886&rows=1" | jq '.response.numFound')
+
+          echo "PANEMAR count after check: $FINAL"
+
+          if [ "$FINAL" -ge "1" ]; then
+            echo "✅ SUCCESS: PANEMAR is in company core"
+          else
+            echo "❌ FAILED: PANEMAR still not in company core"
+            exit 1
+          fi
+
+  Automation-Tests:
+    runs-on: ubuntu-latest
+    needs: ensure-company-core
 
     steps:
       - uses: actions/checkout@v5
@@ -25,3 +102,5 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
